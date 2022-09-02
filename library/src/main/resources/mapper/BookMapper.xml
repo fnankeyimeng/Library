@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.neu.book.mapper.BookMapper">
+    <select id="findBook" resultType="com.neu.book.entity.Book">
+          <![CDATA[
+             select b.* from
+              (select p.*,rownum r from book1 p) b
+             where r>(#{index}-1)*#{size} and r<=#{index}*#{size}
+         ]]>
+    </select>
+
+    <!--模糊查询-->
+    <sql id="sql1">
+        select b.* from
+             (select p.*,rownum r from book1 p
+    </sql>
+    <sql id="sql2">
+
+        <![CDATA[
+        ) b
+           where r>(#{index}-1)*#{size} and r<=#{index}*#{size}
+       ]]>
+    </sql>
+    <select id="findBookMo" resultType="com.neu.book.entity.Book">
+
+        <include refid="sql1"></include>
+        <where>
+            <if test="bname!=null and bname!=''">
+                bname like '%${bname}%'
+            </if>
+        </where>
+        <include refid="sql2"></include>
+    </select>
+
+    <insert id="addBook" parameterType="com.neu.book.entity.Book">
+        insert into book1(bid,bname,bauthor,status,bpic)
+        values(#{bid},#{bname},#{bauthor},#{status},#{bpic})
+    </insert>
+    <delete id="delBook" parameterType="com.neu.book.entity.Book">
+        delete from book1 where bid=#{bid}
+    </delete>
+
+    <select id="findByBookId" resultType="com.neu.book.entity.Book">
+        select * from book1 where bid=#{bid}
+    </select>
+
+    <update id="updateBook" parameterType="com.neu.book.entity.Book">
+        update book1 set bname=#{bname},bauthor=#{bauthor}, status=#{status},bpic=#{bpic} where bid=#{bid}
+    </update>
+
+    <update id="updateStatus" parameterType="com.neu.book.entity.Book">
+        update book1 set status=#{status} where bid=#{bid}
+    </update>
+
+
+</mapper>

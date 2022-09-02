@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.neu.user.mapper.UserMapper">
+    <select id="login" resultType="com.neu.user.entity.User">
+          select * from user1 where uname=#{uname} and upwd=#{upwd}
+      </select>
+    <select id="findUser" resultType="com.neu.user.entity.User">
+         <![CDATA[
+             select b.* from
+              (select p.*,rownum r from user1 p) b
+             where r>(#{index}-1)*#{size} and r<=#{index}*#{size}
+         ]]>
+    </select>
+    <!--模糊查询-->
+    <sql id="sql1">
+        select b.* from
+             (select p.*,rownum r from user1 p
+    </sql>
+    <sql id="sql2">
+        <![CDATA[
+        ) b
+           where r>(#{index}-1)*#{size} and r<=#{index}*#{size}
+       ]]>
+    </sql>
+    <select id="findUserMo" resultType="com.neu.user.entity.User">
+        <include refid="sql1"></include>
+        <where>
+            <if test="uname!=null and uname!=''">
+                uname like '%${uname}%'
+            </if>
+        </where>
+        <include refid="sql2"></include>
+    </select>
+
+    <delete id="delUser" parameterType="com.neu.user.entity.User">
+        delete from user1 where id=#{id}
+    </delete>
+    <insert id="addUser" parameterType="com.neu.user.entity.User">
+        insert into user1(id,uname,upwd,type) values(#{id},#{uname},#{upwd},#{type})
+    </insert>
+    <select id="findById" resultType="com.neu.user.entity.User">
+        select * from user1 where id=#{id}
+    </select>
+    <update id="updateUser" parameterType="com.neu.user.entity.User">
+        update user1 set uname=#{uname},upwd=#{upwd},type=#{type}
+        where id=#{id}
+    </update>
+
+</mapper>

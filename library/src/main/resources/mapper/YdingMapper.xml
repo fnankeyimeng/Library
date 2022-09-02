@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.neu.yding.mapper.YdMapper">
+    <insert id="addYD" parameterType="com.neu.yding.entity.Yding">
+        insert into yding(yid,ystarttime,yendtime,u_id,b_id,status)
+        values(user_seq.nextval,#{ystarttime},#{yendtime},#{u_id},#{b_id},#{status})
+    </insert>
+    <select id="findYD" resultType="com.neu.yding.entity.Yding">
+        select * from yding where u_id=#{u_id}
+    </select>
+    <delete id="delYD" parameterType="com.neu.yding.entity.Yding">
+        delete from yding where b_id=#{b_id}
+    </delete>
+    <select id="findAllYD" resultType="com.neu.yding.entity.Yding">
+        <![CDATA[
+             select b.* from
+              (select p.*,rownum r from yding p) b
+             where r>(#{index}-1)*#{size} and r<=#{index}*#{size}
+         ]]>
+    </select>
+</mapper>
